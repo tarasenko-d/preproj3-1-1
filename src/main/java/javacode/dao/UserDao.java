@@ -1,7 +1,7 @@
 
 package javacode.dao;
 
-import javacode.model.Users;
+import javacode.model.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,11 +9,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserDao extends CrudRepository<Users, Long> {
+public interface UserDao extends CrudRepository<User, Long> {
 
-    List<Users> findAllByAgeBefore(int age);
+    List<User> findAllByAgeBefore(int age);
 
-    Optional<Users> findById(Long id);
+    Optional<User> findById(Long id);
+
+    Optional<User> findByLogin(String login);
 }
 
 

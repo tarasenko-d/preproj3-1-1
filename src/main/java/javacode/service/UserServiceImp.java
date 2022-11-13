@@ -1,68 +1,67 @@
 package javacode.service;
 
+import javacode.dao.RoleDao;
 import javacode.dao.UserDao;
-//import javacode.dao.UserDaoImp;
-import javacode.model.Users;
+import javacode.model.Role;
+import javacode.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserServiceImp implements UserService {
+public class UserServiceImp implements UserService, UserDetailsService {
 
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private RoleDao roleDao;
+
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Override
-    public void add(Users user) {
+    public void add(User user) {
+        roleDao.save(new Role(1L,"ROLE_ADMIN"));
+        roleDao.save(new Role(2L, "ROLE_USER"));
+        user.setRoles(Collections.singleton(new Role(2L, "ROLE_USER")));
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        System.out.println(user);
         userDao.save(user);
-        //userDao.add(user);
     }
 
     @Override
-    public Users findById(Long id) {
+    public User findById(Long id) {
         return userDao.findById(id).get();
     }
 
     @Override
-    public List<Users> listUser() {
-        List<Users> personList = new ArrayList<>();
+    public List<User> listUser() {
+        List<User> personList = new ArrayList<>();
         userDao.findAll().forEach(personList::add);
         return personList;
-        // return userDao.listUser();
     }
 
     @Override
-    public void delete(Users person) {
+    public void delete(User person) {
         userDao.delete(person);
     }
 
-   /* @Override
-    public void edit(Long id, Users personToUpdate) {
-        //  Optional<Users> user = userDao.findById(personToUpdate.getId());
-        Optional<Users> user = userDao.findById(id);
-        if (user.isPresent()) {
-            Users updatedPerson = user.get();
-            updatedPerson.setLogin(personToUpdate.getLogin());
-            updatedPerson.setPassword(personToUpdate.getPassword());
-            updatedPerson.setAge(personToUpdate.getAge());
-            userDao.save(updatedPerson);
-            System.out.println("User with id:" + personToUpdate.getId() + " was updated: " + updatedPerson);
-            return;
-        }
-        System.out.println("Smth went wrong with update");
-    }*/
     @Override
-    public void edit(Users personToUpdate) {
-        //  Optional<Users> user = userDao.findById(personToUpdate.getId());
+    public void edit(User personToUpdate) {
         Long id = personToUpdate.getId();
-        Optional<Users> user = userDao.findById(id);
+        Optional<User> user = userDao.findById(id);
         System.out.println(user);
         if (user.isPresent()) {
-            Users updatedPerson = user.get();
+            User updatedPerson = user.get();
             updatedPerson.setLogin(personToUpdate.getLogin());
             updatedPerson.setPassword(personToUpdate.getPassword());
             updatedPerson.setAge(personToUpdate.getAge());
@@ -74,10 +73,20 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public List<Users> findAllKids(int age) {
-        List<Users> personList = new ArrayList<>();
-        userDao.findAllByAgeBefore(age).forEach(personList::add);
-        return personList;
+    public List<User> findAllKids(int age) {
+        return new ArrayList<>(userDao.findAllByAgeBefore(age));
     }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> user = userDao.findByLogin(username);
+        System.out.println("Load user by name "+ username +"!");
+
+        if (user.isEmpty()){
+            throw new UsernameNotFoundException("User doesn't exists");
+        }
+        return user.get();
+    }
+
 
 }

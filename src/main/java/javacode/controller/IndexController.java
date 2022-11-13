@@ -1,16 +1,21 @@
 package javacode.controller;
 
-import javacode.model.Users;
+import javacode.model.User;
 import javacode.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Controller
 public class IndexController {
@@ -18,50 +23,51 @@ public class IndexController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/")
+    @GetMapping("/list")
     public ModelAndView getList() {
-        var userList = userService.listUser();
-        var params = new HashMap<String, Object>();
+        List<User> userList = userService.listUser();
+        Map<String,Object> params = new HashMap<>();
         params.put("userList", userList);
         return new ModelAndView("index", params);
     }
 
     @GetMapping("/kids")
     public ModelAndView kids(@RequestParam int age) {
-        var personList = userService.findAllKids(age);
-        var params = new HashMap<String, Object>();
+        List<User> personList = userService.findAllKids(age);
+        Map<String,Object> params = new HashMap<>();
         params.put("userList", personList);
         return new ModelAndView("ages", params);
     }
 
 
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public String save(Model model, @ModelAttribute("user") Users user) {
-        userService.add(user);
-        return "redirect:/";
+    @PostMapping(value = "/save")
+    public String add_post(Model model, @ModelAttribute("user") User user) {
+        System.out.println("add controller");
+            userService.add(user);
+            return "redirect:/list";
     }
 
-    @GetMapping(value = "/delete")
+    @GetMapping(value = "/admin/delete")
     public String deleteUser(@RequestParam Long id) {
-        Users userToDelete = userService.findById(id);
+        User userToDelete = userService.findById(id);
         userService.delete(userToDelete);
-        return "redirect:/";
+        return "redirect:/list";
     }
 
-    @GetMapping(value = "/edit")
+    @GetMapping(value = "/admin/edit")
     public ModelAndView editUser(@RequestParam Long id) {
-        Users userToEdit = userService.findById(id);
-        var params = new HashMap<String, Object>();
+        User userToEdit = userService.findById(id);
+        Map params = new HashMap<String, Object>();
         params.put("userToEdit", userToEdit);
         System.out.println(userToEdit);
         return new ModelAndView("edit", params);
     }
 
-    @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public String edit(@ModelAttribute("user") Users user) {
+    @PostMapping(value = "/admin/edit")
+    public String edit(@ModelAttribute("user") User user) {
         System.out.println(user);
         userService.edit(user);
-        return "redirect:/";
+        return "redirect:/list";
     }
 
 }
@@ -70,12 +76,3 @@ public class IndexController {
 //save
 // ->post
 //REST как писать запросы url
-
-
-/*   @GetMapping("/add")
-       public Users addUser() {
-          Users person = new Users();
-           model.addObject("user", person);
-           return model;
-       }
-   */

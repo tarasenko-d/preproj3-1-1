@@ -1,21 +1,22 @@
 package javacode.service;
 
-import javacode.model.Users;
+import javacode.model.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
-    void delete(Users person);
+    void delete(User person);
 
-    void edit(Users person);
+    void edit(User person);
 
-    void add(Users user);
+    void add(User user);
 
-    Users findById(Long id);
+    User findById(Long id);
 
-    List<Users> listUser();
+    List<User> listUser();
 
-    List<Users> findAllKids(int age);
+    List<User> findAllKids(int age);
 
 }

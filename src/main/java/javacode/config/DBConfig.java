@@ -1,8 +1,7 @@
 package javacode.config;
 
-import javacode.model.Users;
+import javacode.model.User;
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
@@ -19,16 +18,16 @@ public class DBConfig {
 
     private static SessionFactory sessionFactory;
 
-    private static final String hibernate_show_sql = "true";
+    private static final String hibernate_show_sql = "false";
     private static final String hibernate_connection_username = "test";
     private static final String hibernate_connection_password = "test";
     private static final String hibernate_connection_url = "jdbc:h2:./h2db";
-    private static final String hibernate_hbm2ddl_auto = "create";
+    private static final String hibernate_hbm2ddl_auto = "update";
 
     @Bean
     public Configuration getH2Configuration() {
         Configuration configuration = new Configuration();
-        configuration.addAnnotatedClass(Users.class);
+        configuration.addAnnotatedClass(User.class);
 
         configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
         configuration.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
@@ -41,22 +40,6 @@ public class DBConfig {
         return configuration;
     }
 
-
-//    @Bean
-//    public SessionFactory getSessionFactory() {
-//        if (sessionFactory == null) {
-//            try {
-//                Configuration configuration = getH2Configuration();
-//                configuration.addAnnotatedClass(Users.class);
-//                StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().
-//                        applySettings(configuration.getProperties());
-//                sessionFactory = configuration.buildSessionFactory(builder.build());
-//            } catch (Exception e) {
-//                System.out.println("Исключение!" + e);
-//            }
-//        }
-//        return sessionFactory;
-//    }
     @Bean
     public EntityManagerFactory entityManagerFactory() {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
@@ -68,9 +51,9 @@ public class DBConfig {
         factory.setDataSource(getDataSource());
         factory.afterPropertiesSet();
         factory.setLoadTimeWeaver(new InstrumentationLoadTimeWeaver());
+
         return factory.getObject();
     }
-
 
     @Bean
     public DataSource getDataSource() {

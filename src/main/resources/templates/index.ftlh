@@ -10,10 +10,11 @@
 </head>
 <body>
 <h2>List of users</h2>
+
 <div>
     <fieldset>
         <legend>Add user</legend>
-        <form name="user" action="save" method="POST">
+        <form name="user" action="/save" method="POST">
             <@ui.formInput id="t2" name="login" label="Логин"/> <br/>
             <@ui.formInput id="t3" name="password" label="Пароль"/> <br/>
             <@ui.formInput id="t4" name="age" label="Возраст"/> <br/>
@@ -29,6 +30,7 @@
         <th>Login</th>
         <th>Password</th>
         <th>Age</th>
+        <th>Roles</th>
         <th>Change</th>
     </tr>
 
@@ -38,20 +40,21 @@
             <td> ${user.getLogin()}</td>
             <td> ${user.getPassword()}</td>
             <td> ${user.getAge()}</td>
+            <td> ${user.rolesToString()}</td>
             <td>
-                <a href="/edit?id=${user.getId()}">Edit</a>
+                <a href="/admin/edit?id=${user.getId()}">Edit</a>
 
-                <a href="/delete?id=${user.getId()}">Delete</a>
+                <a href="/admin/delete?id=${user.getId()}">Delete</a>
             </td>
 
         </tr>
     </#list>
 </table>
 
-<form name="age" action="kids" method="GET">
-<label> Найти пользователей до </label>
-<input type="text" name="age" value="">
-<input type="submit" value="Save" />
-</form>
+    <form name="age" action="kids" method="GET">
+      <label> Найти пользователей до </label>
+      <input type="text" name="age" value="">
+      <input type="submit" value="Поиск"/>
+    </form>
 </body>
 </html>
