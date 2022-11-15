@@ -30,9 +30,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
 
     @Override
     public void add(User user) {
-        roleDao.save(new Role(1L,"ROLE_ADMIN"));
-        roleDao.save(new Role(2L, "ROLE_USER"));
-        user.setRoles(Collections.singleton(new Role(2L, "ROLE_USER")));
+        user.setRoles(Collections.singleton(roleDao.findRoleByName("ROLE_USER")));
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         System.out.println(user);
         userDao.save(user);
@@ -75,6 +73,13 @@ public class UserServiceImp implements UserService, UserDetailsService {
     @Override
     public List<User> findAllKids(int age) {
         return new ArrayList<>(userDao.findAllByAgeBefore(age));
+    }
+
+    @Override
+    public void addByAdmin(User user) {
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        System.out.println(user);
+        userDao.save(user);
     }
 
     @Override

@@ -2,6 +2,7 @@ package javacode.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import javax.persistence.Table;
 @Data
 @NoArgsConstructor
 @Entity
+@ToString
 @Table(name = "roles")
 public class Role implements GrantedAuthority {
     @Id
@@ -19,6 +21,10 @@ public class Role implements GrantedAuthority {
 
     public Role(Long id) {
         this.id = id;
+    }
+
+    public Role(String name) {
+        this.name = name;
     }
 
     public Role(Long id, String name) {

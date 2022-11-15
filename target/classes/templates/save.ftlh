@@ -1,14 +1,12 @@
 <#import "ui.ftl" as ui/>
-
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Users</title>
+    <title>User</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="style.css">
 
     <style>
         .header {
@@ -88,13 +86,26 @@
             font-size: 14px; /* Increased text to enable scrolling */
             padding: 0px 10px;
         }
-
-        .central {
+        .central{
             margin-left: 10px;
+            border-radius: 0px 0px 2px 2px;
+        }
+
+        .add-form {
+            margin-left: auto;
+            margin-top: auto;
+            padding-bottom: 80px;
+            padding-top: 40px;
+            text-align: center;
+            background-color: #eae9e9;
         }
 
         body {
             background-color: #ffffff;
+        }
+
+        label {
+            font-weight: bold;
         }
 
         @media screen and (max-height: 450px) {
@@ -127,48 +138,27 @@
         <h2>Admin panel</h2>
 
         <div class="panel">
-            <a href="/list" class="active">List of users</a>
-            <a href="/admin/add">Add user</a>
+            <a href="/list">List of users</a>
+            <a href="/admin/add" class="active">Add user</a>
         </div>
-
-        <table class="table table-hover table-striped">
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Login</th>
-                <th scope="col">Password</th>
-                <th scope="col">Age</th>
-                <th scope="col">Roles</th>
-                <th scope="col">Edit</th>
-                <th scope="col">Delete</th>
-            </tr>
-
-            <#list userList as user>
-                <tr>
-                    <td> ${user.getId()}</td>
-                    <td> ${user.getLogin()}</td>
-                    <td> ${user.getPassword()}</td>
-                    <td> ${user.getAge()}</td>
-                    <td> ${user.rolesToString()}</td>
-                    <td>
-                        <a class="btn btn-primary" href="/admin/edit?id=${user.getId()}">Edit</a>
-                    </td>
-                    <td>
-                        <a class="btn btn-danger" href="/admin/delete?id=${user.getId()}">Delete</a>
-                    </td>
-
-                </tr>
-            </#list>
-        </table>
-
-        <form name="age" action="kids" method="GET">
-            <label> Найти пользователей до </label>
-            <input type="text" name="age" value="">
-            <input type="submit" value="Поиск"/>
-        </form>
-
+        <div class="add-form">
+            <form name="user" action="/admin/add" method="POST">
+                <label>Логин</label> <br/>
+                <input type="text" name="login"><br/>
+                <label>Пароль</label> <br/>
+                <input type="text" name="password"> <br/>
+                <label>Возраст</label> <br/>
+                <input type="text" name="age"> <br/> <br/>
+                <select name="roles" label="Role" required="required">
+                    <option>Выберите вариант</option>
+                    <option value="ROLE_USER">ROLE_USER</option>
+                    <option value="ROLE_ADMIN">ROLE_ADMIN</option>
+                </select><br/> <br/>
+                <input type="submit" class="btn btn-primary" value="Сохранить"/>
+            </form>
+        </div>
     </div>
 </div>
-
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
@@ -180,5 +170,6 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
 
+</div>
 </body>
 </html>

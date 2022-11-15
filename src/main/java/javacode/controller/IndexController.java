@@ -26,7 +26,7 @@ public class IndexController {
     @GetMapping("/list")
     public ModelAndView getList() {
         List<User> userList = userService.listUser();
-        Map<String,Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("userList", userList);
         return new ModelAndView("index", params);
     }
@@ -34,7 +34,7 @@ public class IndexController {
     @GetMapping("/kids")
     public ModelAndView kids(@RequestParam int age) {
         List<User> personList = userService.findAllKids(age);
-        Map<String,Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("userList", personList);
         return new ModelAndView("ages", params);
     }
@@ -43,8 +43,27 @@ public class IndexController {
     @PostMapping(value = "/save")
     public String add_post(Model model, @ModelAttribute("user") User user) {
         System.out.println("add controller");
-            userService.add(user);
-            return "redirect:/list";
+        userService.add(user);
+        return "redirect:/list";
+    }
+
+    @PostMapping(value = "/admin/add")
+    public String postAdd_admin(@ModelAttribute("user") User user) {
+        System.out.println("add admin");
+        userService.addByAdmin(user);
+        return "save";
+    }
+    @GetMapping(value = "/admin/add")
+    public String getAdd_admin() {
+        return "save";
+    }
+
+
+    @GetMapping(value = "/save")
+    public String add_get(Model model, @ModelAttribute("user") User user) {
+        System.out.println("add controller");
+      //  userService.add(user);
+        return "save";
     }
 
     @GetMapping(value = "/admin/delete")
@@ -72,7 +91,4 @@ public class IndexController {
 
 }
 ////TODO
-//как передавать модель в контроллер(RequestBody)
 //save
-// ->post
-//REST как писать запросы url

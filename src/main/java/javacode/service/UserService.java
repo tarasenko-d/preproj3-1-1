@@ -19,4 +19,5 @@ public interface UserService extends UserDetailsService {
 
     List<User> findAllKids(int age);
 
+    void addByAdmin(User user);
 }
