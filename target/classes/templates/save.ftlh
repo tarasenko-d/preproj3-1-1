@@ -88,7 +88,7 @@
         }
         .central{
             margin-left: 10px;
-            border-radius: 0px 0px 2px 2px;
+            border-radius: 0px 0px 4px 4px;
         }
 
         .add-form {
